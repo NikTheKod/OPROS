@@ -1,8 +1,9 @@
-import asyncpg
+import psycopg
+from psycopg.rows import dict_row
 from config import DATABASE_URL
 
 async def init_db():
-    conn = await asyncpg.connect(DATABASE_URL)
+    conn = await psycopg.AsyncConnection.connect(DATABASE_URL)
     await conn.execute('''
         CREATE TABLE IF NOT EXISTS appointments (
             id SERIAL PRIMARY KEY,
@@ -15,3 +16,6 @@ async def init_db():
         )
     ''')
     await conn.close()
+
+async def get_connection():
+    return await psycopg.AsyncConnection.connect(DATABASE_URL)

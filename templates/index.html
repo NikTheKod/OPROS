@@ -3,395 +3,137 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nail Studio - запись</title>
+    <title>Запись на ногти</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background: linear-gradient(135deg, #fff5f7 0%, #ffe4e8 100%);
-            min-height: 100vh;
-            padding: 20px;
+            margin: 0;
+            padding: 16px;
+            background: var(--tg-theme-bg-color, #fff);
+            color: var(--tg-theme-text-color, #000);
         }
-        
-        .container {
-            max-width: 500px;
-            margin: 0 auto;
-        }
-        
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        
-        h1 {
-            color: #d44e6c;
-            font-size: 32px;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
-        }
-        
-        .subtitle {
-            color: #666;
-            font-size: 16px;
-        }
-        
-        .section-title {
-            color: #d44e6c;
-            font-size: 20px;
-            margin: 25px 0 15px;
-            padding-bottom: 5px;
-            border-bottom: 2px solid #ffb6c1;
-        }
-        
-        .services-grid {
-            display: grid;
-            gap: 10px;
-            margin-bottom: 30px;
-        }
-        
         .service-card {
-            background: white;
-            border-radius: 15px;
-            padding: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: transform 0.2s;
+            border: 1px solid var(--tg-theme-hint-color, #ccc);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: 0.2s;
         }
-        
-        .service-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(212, 78, 108, 0.1);
+        .service-card.selected {
+            border: 2px solid var(--tg-theme-button-color, #40a7e3);
+            background: var(--tg-theme-secondary-bg-color, #f0f0f0);
         }
-        
-        .service-info h3 {
-            color: #333;
+        button {
+            width: 100%;
+            padding: 16px;
+            background: var(--tg-theme-button-color, #40a7e3);
+            color: var(--tg-theme-button-text-color, #fff);
+            border: none;
+            border-radius: 12px;
             font-size: 16px;
-            margin-bottom: 5px;
-        }
-        
-        .service-duration {
-            color: #999;
-            font-size: 14px;
-        }
-        
-        .service-price {
-            color: #d44e6c;
-            font-size: 20px;
             font-weight: bold;
+            margin-top: 16px;
         }
-        
-        .booking-form {
-            background: white;
-            border-radius: 20px;
-            padding: 25px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            margin-top: 20px;
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: #555;
-            font-weight: 500;
-            font-size: 14px;
-        }
-        
         input, select {
             width: 100%;
-            padding: 15px;
-            border: 2px solid #ffe4e8;
-            border-radius: 12px;
-            font-size: 16px;
-            transition: border-color 0.3s;
-            background: #fff9fa;
-        }
-        
-        input:focus, select:focus {
-            outline: none;
-            border-color: #d44e6c;
-        }
-        
-        .datetime-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-        
-        .btn-submit {
-            background: #d44e6c;
-            color: white;
-            border: none;
-            padding: 18px;
-            border-radius: 12px;
-            font-size: 18px;
-            font-weight: bold;
-            width: 100%;
-            cursor: pointer;
-            transition: background 0.3s;
-            margin-top: 10px;
-        }
-        
-        .btn-submit:hover {
-            background: #c13e5c;
-        }
-        
-        .notification {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            right: 20px;
-            padding: 15px;
-            border-radius: 12px;
-            text-align: center;
-            font-weight: 500;
-            display: none;
-            z-index: 1000;
-            animation: slideUp 0.3s ease;
-        }
-        
-        @keyframes slideUp {
-            from {
-                transform: translateY(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-        
-        .notification.success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-        
-        .notification.error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-        
-        .info-block {
-            background: #fff0f3;
-            border-radius: 15px;
-            padding: 15px;
-            margin: 20px 0;
-            text-align: center;
-            color: #d44e6c;
-        }
-        
-        .info-block p {
-            margin: 5px 0;
-            color: #666;
+            padding: 12px;
+            margin: 8px 0;
+            border: 1px solid var(--tg-theme-hint-color, #ccc);
+            border-radius: 8px;
+            background: var(--tg-theme-bg-color, #fff);
+            color: var(--tg-theme-text-color, #000);
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>💅 Nail Studio</h1>
-            <div class="subtitle">Салон красоты для твоих ручек</div>
+    <div id="app">
+        <h2>Выберите услугу</h2>
+        <div class="service-card" data-service="Маникюр + покрытие">
+            <strong>Маникюр + покрытие</strong> - 1500₽
         </div>
-        
-        <div id="prices"></div>
-        
-        <h2 class="section-title">📝 Запись на процедуру</h2>
-        
-        <div class="booking-form">
-            <form id="bookingForm">
-                <div class="form-group">
-                    <label>👤 Ваше имя</label>
-                    <input type="text" id="name" placeholder="Например: Анна" required>
-                </div>
-                
-                <div class="form-group">
-                    <label>📞 Телефон</label>
-                    <input type="tel" id="phone" placeholder="+7 (999) 123-45-67" required>
-                </div>
-                
-                <div class="form-group">
-                    <label>💅 Услуга</label>
-                    <select id="service" required>
-                        <option value="">Выберите услугу</option>
-                    </select>
-                </div>
-                
-                <div class="datetime-row">
-                    <div class="form-group">
-                        <label>📅 Дата</label>
-                        <input type="date" id="date" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>⏰ Время</label>
-                        <select id="time" required>
-                            <option value="">Выберите</option>
-                            <option value="10:00">10:00</option>
-                            <option value="11:00">11:00</option>
-                            <option value="12:00">12:00</option>
-                            <option value="13:00">13:00</option>
-                            <option value="14:00">14:00</option>
-                            <option value="15:00">15:00</option>
-                            <option value="16:00">16:00</option>
-                            <option value="17:00">17:00</option>
-                            <option value="18:00">18:00</option>
-                            <option value="19:00">19:00</option>
-                        </select>
-                    </div>
-                </div>
-                
-                <div class="info-block">
-                    <p>📍 Адрес: ул. Примерная, д. 123</p>
-                    <p>⏰ Работаем: 10:00 - 20:00</p>
-                </div>
-                
-                <button type="submit" class="btn-submit">✅ Записаться</button>
-            </form>
+        <div class="service-card" data-service="Наращивание">
+            <strong>Наращивание</strong> - 2000₽
         </div>
+        <div class="service-card" data-service="Дизайн">
+            <strong>Дизайн (1 ноготь)</strong> - от 100₽
+        </div>
+
+        <h2>Выберите дату</h2>
+        <input type="date" id="datePicker" min="2024-01-01">
+
+        <h2>Выберите время</h2>
+        <select id="timeSelect">
+            <option value="10:00">10:00</option>
+            <option value="11:00">11:00</option>
+            <option value="12:00">12:00</option>
+            <option value="13:00">13:00</option>
+            <option value="14:00">14:00</option>
+            <option value="15:00">15:00</option>
+            <option value="16:00">16:00</option>
+            <option value="17:00">17:00</option>
+        </select>
+
+        <button id="bookBtn">Записаться</button>
     </div>
-    
-    <div id="notification" class="notification"></div>
-    
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
     <script>
-        // Инициализация Telegram Web App
-        const tg = window.Telegram?.WebApp;
-        if (tg) {
-            tg.ready();
-            tg.expand();
-        }
-        
-        // Загрузка прайс-листа
-        async function loadPrices() {
-            try {
-                const response = await fetch('/api/prices');
-                const data = await response.json();
-                
-                const pricesDiv = document.getElementById('prices');
-                const select = document.getElementById('service');
-                
-                let pricesHtml = '<h2 class="section-title">💰 Прайс-лист</h2><div class="services-grid">';
-                
-                data.services.forEach(service => {
-                    // Добавляем в прайс
-                    pricesHtml += `
-                        <div class="service-card">
-                            <div class="service-info">
-                                <h3>${service.name}</h3>
-                                <div class="service-duration">⏱ ${service.duration} мин</div>
-                            </div>
-                            <div class="service-price">${service.price} ₽</div>
-                        </div>
-                    `;
-                    
-                    // Добавляем в селект
-                    const option = document.createElement('option');
-                    option.value = service.name;
-                    option.textContent = `${service.name} - ${service.price} ₽`;
-                    select.appendChild(option);
-                });
-                
-                pricesHtml += '</div>';
-                pricesDiv.innerHTML = pricesHtml;
-                
-            } catch (error) {
-                console.error('Ошибка загрузки прайса:', error);
-                showNotification('Не удалось загрузить прайс-лист', 'error');
+        let tg = window.Telegram.WebApp;
+        tg.expand(); // Растягиваем на весь экран
+
+        let selectedService = null;
+
+        // Выбор услуги
+        document.querySelectorAll('.service-card').forEach(card => {
+            card.addEventListener('click', () => {
+                document.querySelectorAll('.service-card').forEach(c => c.classList.remove('selected'));
+                card.classList.add('selected');
+                selectedService = card.getAttribute('data-service');
+            });
+        });
+
+        // Обработка нажатия на кнопку
+        document.getElementById('bookBtn').addEventListener('click', async () => {
+            const date = document.getElementById('datePicker').value;
+            const time = document.getElementById('timeSelect').value;
+
+            if (!selectedService) {
+                tg.showAlert('Пожалуйста, выберите услугу');
+                return;
             }
-        }
-        
-        // Показать уведомление
-        function showNotification(message, type) {
-            const notification = document.getElementById('notification');
-            notification.className = `notification ${type}`;
-            notification.textContent = message;
-            notification.style.display = 'block';
-            
-            setTimeout(() => {
-                notification.style.display = 'none';
-            }, 3000);
-        }
-        
-        // Установка минимальной даты (сегодня)
-        function setMinDate() {
-            const today = new Date();
-            const yyyy = today.getFullYear();
-            const mm = String(today.getMonth() + 1).padStart(2, '0');
-            const dd = String(today.getDate()).padStart(2, '0');
-            
-            document.getElementById('date').min = `${yyyy}-${mm}-${dd}`;
-            document.getElementById('date').value = `${yyyy}-${mm}-${dd}`;
-        }
-        
-        // Обработка отправки формы
-        document.getElementById('bookingForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            // Собираем данные
-            const formData = {
-                name: document.getElementById('name').value.trim(),
-                phone: document.getElementById('phone').value.trim(),
-                service: document.getElementById('service').value,
-                date: document.getElementById('date').value,
-                time: document.getElementById('time').value
+            if (!date) {
+                tg.showAlert('Пожалуйста, выберите дату');
+                return;
+            }
+
+            // Данные для отправки на сервер
+            const bookingData = {
+                user_id: tg.initDataUnsafe.user?.id,
+                username: tg.initDataUnsafe.user?.username,
+                service: selectedService,
+                date: date,
+                time: time
             };
-            
-            // Валидация
-            if (!formData.name || !formData.phone || !formData.service || !formData.date || !formData.time) {
-                showNotification('Пожалуйста, заполните все поля', 'error');
-                return;
-            }
-            
-            if (formData.phone.length < 10) {
-                showNotification('Пожалуйста, введите корректный номер телефона', 'error');
-                return;
-            }
-            
+
             try {
-                // Если открыто в Telegram
-                if (tg) {
-                    tg.sendData(JSON.stringify(formData));
-                    showNotification('Запись отправлена!', 'success');
-                    setTimeout(() => tg.close(), 1000);
-                } 
-                // Если открыто в браузере (для теста)
-                else {
-                    const response = await fetch('/api/book', {
-                        method: 'POST',
-                        headers: {'Content-Type': 'application/json'},
-                        body: JSON.stringify(formData)
-                    });
-                    
-                    const result = await response.json();
-                    if (result.status === 'success') {
-                        showNotification('✅ Запись успешно отправлена!', 'success');
-                        e.target.reset();
-                        setMinDate();
-                    } else {
-                        throw new Error(result.message);
-                    }
+                // Отправляем данные на наш бэкенд
+                const response = await fetch('/api/book', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(bookingData)
+                });
+
+                if (response.ok) {
+                    tg.showAlert('Запись успешно создана! Мы скоро свяжемся с вами.');
+                    tg.close(); // Закрываем Mini App
+                } else {
+                    tg.showAlert('Ошибка при записи. Попробуйте позже.');
                 }
             } catch (error) {
-                console.error('Ошибка:', error);
-                showNotification('❌ Ошибка при отправке. Попробуйте снова.', 'error');
+                tg.showAlert('Ошибка сети');
             }
         });
-        
-        // Инициализация при загрузке
-        loadPrices();
-        setMinDate();
     </script>
 </body>
 </html>

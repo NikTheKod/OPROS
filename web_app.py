@@ -16,10 +16,21 @@ CORS_HEADERS = {
     'Access-Control-Max-Age': '3600'
 }
 
+# ⚠️ ВАЖНО: корневой путь для healthcheck Railway
+@routes.get('/')
+async def root_handler(request):
+    """Корневой путь для healthcheck и тестирования"""
+    logger.info("🔵 GET request to /")
+    return web.Response(
+        text="✅ Nail Bot API is running",
+        status=200,
+        headers={'Content-Type': 'text/plain'}
+    )
+
 @routes.options('/api/book')
 async def options_handler(request):
-    """Обработка CORS preflight запросов - это критически важно!"""
-    logger.info("🔵 OPTIONS request received")
+    """Обработка CORS preflight запросов"""
+    logger.info("🔵 OPTIONS request received to /api/book")
     return web.Response(
         status=200,
         headers=CORS_HEADERS
@@ -28,6 +39,7 @@ async def options_handler(request):
 @routes.options('/api/test')
 async def options_test_handler(request):
     """OPTIONS для тестового endpoint"""
+    logger.info("🔵 OPTIONS request to /api/test")
     return web.Response(status=200, headers=CORS_HEADERS)
 
 @routes.post('/api/book')
